@@ -4,3 +4,6 @@ def bar():
 bar()
 def foo():
     pass
+
+def baz():
+    pass
