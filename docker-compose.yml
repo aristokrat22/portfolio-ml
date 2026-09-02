@@ -1,19 +1,31 @@
+networks:
+  dev:
+
 services:
+  nginx:
+    image: nginx:stable-alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - './nginx.conf:/etc/nginx/nginx.conf'
+      - '/etc/letsencrypt:/etc/letsencrypt'
+      - './certbot-data:/var/www/certbot'
+    depends_on:
+      - backend
+      - frontend
+    networks:
+      - dev
+    restart: always
+
   backend:
     build: ./backend
-    container_name: ml_backend
     networks:
-      default:
-        aliases:
-          - backend
-          - ml_backend
+      - dev
     restart: always
 
   frontend:
     build: ./frontend
-    container_name: ml_frontend
-    ports:
-      - "8080:80"
-    depends_on:
-      - backend
+    networks:
+      - dev
     restart: always
