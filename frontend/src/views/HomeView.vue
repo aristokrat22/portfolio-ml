@@ -6,15 +6,15 @@ import photo from '@/assets/photo.jpg'
 const portfolioResult = ref(null)
 const portfolioError = ref(null)
 
-async function callPortfolio() {
-  try {
-    const { data } = await api.get('/portfolio')
-    portfolioResult.value = data
-    portfolioError.value = null
-  } catch (e) {
-    portfolioError.value = e.message
-  }
-}
+//async function callPortfolio() {
+//  try {
+//    const { data } = await api.get('/portfolio')
+//    portfolioResult.value = data
+//    portfolioError.value = null
+//  } catch (e) {
+//    portfolioError.value = e.message
+//  }
+//}
 </script>
 
 <template>

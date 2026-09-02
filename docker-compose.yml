@@ -1,0 +1,19 @@
+services:
+  backend:
+    build: ./backend
+    container_name: ml_backend
+    networks:
+      default:
+        aliases:
+          - backend
+          - ml_backend
+    restart: always
+
+  frontend:
+    build: ./frontend
+    container_name: ml_frontend
+    ports:
+      - "8080:80"
+    depends_on:
+      - backend
+    restart: always

@@ -1,12 +1,15 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '@/views/HomeView.vue'
-import ModelView from '@/views/ModelView.vue'
+import ModelHouseView from '@/views/ModelHouseView.vue'
+import ModelCarView from '@/views/ModelCarView.vue'
+
 
 const router = createRouter({
   history: createWebHistory(),
   routes: [
     { path: '/', component: HomeView },
-    { path: '/models/:modelId', component: ModelView },
+    { path: '/models/predict-price-car', component: ModelCarView },
+    { path: '/models/predict-price-house', component: ModelHouseView },
   ],
   scrollBehavior(to) {
     if (to.hash) {

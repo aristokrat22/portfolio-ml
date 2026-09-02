@@ -39,11 +39,8 @@ __screenshots__/
 # Vite
 *.timestamp-*-*.mjs
 
-# Виртуальное окружение (venv)
-.venv/
-venv/
-ENV/
-env/
+.venv2/
+
 
 # Кэш Python
 __pycache__/
@@ -61,3 +58,4 @@ catboost_info/
 
 # Большие данные (если нужно исключить тяжелые датасеты)
 *.csv
+*.egg-info/
