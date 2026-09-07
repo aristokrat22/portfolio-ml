@@ -11,7 +11,7 @@ function scrollToTop() {
   <div class="min-h-screen bg-white text-slate-900">
     <nav
       v-if="route.path === '/'"
-      class="fixed top-6 left-1/2 -translate-x-1/2 z-50 flex gap-6 bg-slate-950/85 backdrop-blur-md text-white rounded-full px-8 py-3 shadow-lg shadow-black/20 ring-1 ring-white/10"
+      class="fixed top-4 left-1/2 -translate-x-1/2 z-50 flex gap-6 bg-slate-950/85 backdrop-blur-md text-white rounded-full px-8 py-3 shadow-lg shadow-black/20 ring-1 ring-white/10"
     >
       <router-link to="/#cv" class="hover:text-sky-400 transition">CV</router-link>
       <router-link to="/#models" class="hover:text-sky-400 transition">Models</router-link>

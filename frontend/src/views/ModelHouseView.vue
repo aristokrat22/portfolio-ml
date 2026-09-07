@@ -81,7 +81,7 @@ async function submitForm() {
 </script>
 
 <template>
-  <div class="max-w-md mx-auto p-6 pb-32">
+  <div class="max-w-md mx-auto p-6 pt-20 pb-32">
     <h1 class="text-2xl font-bold mb-4">Предсказание цены квартиры</h1>
 
     <form @submit.prevent="submitForm" class="space-y-4">

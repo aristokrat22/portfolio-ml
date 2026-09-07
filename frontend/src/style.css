@@ -3,3 +3,7 @@
 section[id] {
   scroll-margin-top: 6rem;
 }
+
+.shuffle-move {
+  transition: transform 0.7s ease-in-out;
+}
