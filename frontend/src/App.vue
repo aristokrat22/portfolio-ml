@@ -20,9 +20,11 @@ function scrollToTop() {
 
     <nav
       v-else
-      class="fixed top-6 left-1/2 -translate-x-1/2 z-50 flex bg-slate-950/85 backdrop-blur-md text-white rounded-full px-8 py-3 shadow-lg shadow-black/20 ring-1 ring-white/10"
+      class="fixed top-6 left-6 z-50 flex bg-slate-950/85 backdrop-blur-md text-white rounded-full px-6 py-2.5 shadow-lg shadow-black/20 ring-1 ring-white/10"
     >
-      <router-link to="/" class="hover:text-sky-400 transition">← Home</router-link>
+      <router-link to="/" class="hover:text-sky-400 transition flex items-center gap-1 text-sm font-medium">
+        ← Home
+      </router-link>
     </nav>
 
     <router-view />
