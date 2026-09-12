@@ -5,10 +5,9 @@ from pydantic import BaseModel
 import uvicorn
 
 
-
 app = FastAPI()
 
-MODEL_PATH_CARS = Path(__file__).parent / "model-examscore.pkl"
+MODEL_PATH_CARS = Path(__file__).parent / "catboost_kufar_auto.pkl"
 MODEL_PATH_HOUSES = Path(__file__).parent / "catboost_kufar_kv.pkl"
 
 with open(MODEL_PATH_CARS, "rb") as f1:
@@ -16,9 +15,6 @@ with open(MODEL_PATH_CARS, "rb") as f1:
 
 with open(MODEL_PATH_HOUSES, "rb") as f2:
     model_houses = pickle.load(f2)
-
-import pandas as pd
-from pydantic import BaseModel
 
 
 class HouseInput(BaseModel):
@@ -64,27 +60,45 @@ def predict_price_houses(data: HouseInput):
     }
 
 
-class ExamInput(BaseModel):
-    study_hours: float
-    class_attendance: float
-    sleep_hours: float
-    sleep_quality: str
-    study_method: str
-    facility_rating: str
+class CarInput(BaseModel):
+    regdate: int      # Год выпуска
+    mileage: float    # Пробег (км)
+    engine: str       # Тип топлива / двигатель
+    capacity: float   # Объем двигателя (л)
+    gearbox: str      # Коробка передач
+    body_type: str    # Тип кузова
+    drive: str        # Привод
+    brand: str        # Марка
+    model: str        # Модель
 
 
 @app.post("/api/models/predict-price-car")
-def predict_exam_score(data: ExamInput):
+def predict_price_car(data: CarInput):
+    # Расчет фичи износа wear
+    age = 2026 - data.regdate
+    wear = round(data.mileage / (age + 1), 1)
+
+    # Строгий порядок фичей согласно features в feature_eng.py:
+    # ["regdate", "mileage", "engine", "capacity", "gearbox", "body_type", "drive", "brand", "model", "wear"]
     features_order = [
-        data.study_hours,
-        data.class_attendance,
-        data.sleep_hours,
-        data.sleep_quality,
-        data.study_method,
-        data.facility_rating,
+        data.regdate,
+        data.mileage,
+        data.engine,
+        data.capacity,
+        data.gearbox,
+        data.body_type,
+        data.drive,
+        data.brand,
+        data.model,
+        wear,
     ]
-    prediction = model_cars.predict([features_order])
-    return {"predicted_score": float(prediction[0])}
+
+    prediction = model_cars.predict([features_order])[0]
+    predicted_price = max(0, round(float(prediction), 2))
+
+    return {
+        "predicted_price": predicted_price
+    }
 
 if __name__ == "__main__":
     uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=False)

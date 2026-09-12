@@ -14,9 +14,11 @@ df = clean_nan(df)
 
 #-------------------------------------------------------------------
 df[["street", "house_number"]] = df["address"].apply(parse_address)
+
 features = ["rooms", "year_built", "has_balcony", "is_first_floor", "is_last_floor",
             "area_total", "area_living", "area_kitchen", "bathroom_type", "balcony_type", "condition","street"]
 cat_features = ["bathroom_type", "balcony_type", "condition", "street"]
+
 df = clean_nan(df)
 
 

@@ -3,13 +3,21 @@ import { ref, reactive } from 'vue'
 import { api } from '@/api'
 
 const form = reactive({
-  study_hours: null,
-  class_attendance: null,
-  sleep_hours: null,
-  sleep_quality: '',
-  study_method: '',
-  facility_rating: '',
+  brand: '',
+  model: '',
+  regdate: 2018,
+  mileage: null,
+  capacity: 2.0,
+  engine: '',
+  gearbox: '',
+  body_type: '',
+  drive: ''
 })
+
+const engineOptions = ['Бензин', 'Дизель', 'Гибрид', 'Электро']
+const gearboxOptions = ['Механика', 'Автомат', 'Робот', 'Вариатор']
+const bodyTypeOptions = ['Седан', 'Внедорожник', 'Универсал', 'Хэтчбек', 'Купе', 'Минивэн', 'Лифтбек', 'Пикап']
+const driveOptions = ['Передний', 'Задний', 'Полный']
 
 const result = ref(null)
 const error = ref(null)
@@ -21,7 +29,7 @@ async function submitForm() {
   loading.value = true
   try {
     const { data } = await api.post('/models/predict-price-car', form)
-    result.value = data.predicted_score
+    result.value = data.predicted_price
   } catch (e) {
     error.value = e.message
   } finally {
@@ -32,71 +40,129 @@ async function submitForm() {
 
 <template>
   <div class="max-w-md mx-auto p-6 pt-20 pb-32">
-    <h1 class="text-2xl font-bold mb-4">Предсказание оценки за экзамен</h1>
+    <router-link 
+      to="/" 
+      class="inline-flex items-center gap-1.5 text-sm font-medium text-slate-500 hover:text-slate-900 mb-4 transition"
+    >
+      ← На главную
+    </router-link>
+
+    <h1 class="text-2xl font-bold mb-6">Предсказание цены автомобиля</h1>
 
     <form @submit.prevent="submitForm" class="space-y-4">
       <div>
-        <label class="block text-sm font-medium mb-1">Часы подготовки</label>
-        <input type="number" v-model.number="form.study_hours" min="0.08" max="7.91" step="any" required
-          class="w-full border rounded px-3 py-2" />
-        <p class="text-xs text-gray-500 mt-1">0.08 – 7.91</p>
+        <label class="block text-sm font-medium mb-1">Марка авто</label>
+        <input 
+          type="text" 
+          v-model="form.brand" 
+          placeholder="Например: Volkswagen, BMW, Geely..." 
+          required 
+          class="w-full border rounded px-3 py-2" 
+        />
       </div>
 
       <div>
-        <label class="block text-sm font-medium mb-1">Посещаемость, %</label>
-        <input type="number" v-model.number="form.class_attendance" min="40.6" max="99.4" step="any" required
-          class="w-full border rounded px-3 py-2" />
-        <p class="text-xs text-gray-500 mt-1">40.6 – 99.4</p>
+        <label class="block text-sm font-medium mb-1">Модель</label>
+        <input 
+          type="text" 
+          v-model="form.model" 
+          placeholder="Например: Passat, X5, Coolray..." 
+          required 
+          class="w-full border rounded px-3 py-2" 
+        />
       </div>
 
       <div>
-        <label class="block text-sm font-medium mb-1">Часы сна</label>
-        <input type="number" v-model.number="form.sleep_hours" min="4.1" max="9.9" step="any" required
-          class="w-full border rounded px-3 py-2" />
-        <p class="text-xs text-gray-500 mt-1">4.1 – 9.9</p>
+        <label class="block text-sm font-medium mb-1">Год выпуска</label>
+        <input 
+          type="number" 
+          v-model.number="form.regdate" 
+          min="1970" 
+          max="2026" 
+          step="1" 
+          required 
+          class="w-full border rounded px-3 py-2" 
+        />
+        <p class="text-xs text-gray-500 mt-1">1970 – 2026</p>
       </div>
 
       <div>
-        <label class="block text-sm font-medium mb-1">Качество сна</label>
-        <select v-model="form.sleep_quality" required class="w-full border rounded px-3 py-2">
+        <label class="block text-sm font-medium mb-1">Пробег (км)</label>
+        <input 
+          type="number" 
+          v-model.number="form.mileage" 
+          min="0" 
+          max="1000000" 
+          step="100" 
+          required 
+          class="w-full border rounded px-3 py-2" 
+        />
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium mb-1">Объем двигателя (л)</label>
+        <input 
+          type="number" 
+          v-model.number="form.capacity" 
+          min="0.5" 
+          max="8.0" 
+          step="0.1" 
+          required 
+          class="w-full border rounded px-3 py-2" 
+        />
+        <p class="text-xs text-gray-500 mt-1">Например: 1.6, 2.0, 3.0</p>
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium mb-1">Тип двигателя / топлива</label>
+        <select v-model="form.engine" required class="w-full border rounded px-3 py-2">
           <option disabled value="">выбери</option>
-          <option value="poor">poor</option>
-          <option value="average">average</option>
-          <option value="good">good</option>
+          <option v-for="item in engineOptions" :key="item" :value="item">{{ item }}</option>
         </select>
       </div>
 
       <div>
-        <label class="block text-sm font-medium mb-1">Метод обучения</label>
-        <select v-model="form.study_method" required class="w-full border rounded px-3 py-2">
+        <label class="block text-sm font-medium mb-1">Коробка передач</label>
+        <select v-model="form.gearbox" required class="w-full border rounded px-3 py-2">
           <option disabled value="">выбери</option>
-          <option value="coaching">coaching</option>
-          <option value="online videos">online videos</option>
-          <option value="mixed">mixed</option>
-          <option value="self-study">self-study</option>
-          <option value="group study">group study</option>
+          <option v-for="item in gearboxOptions" :key="item" :value="item">{{ item }}</option>
         </select>
       </div>
 
       <div>
-        <label class="block text-sm font-medium mb-1">Оценка условий</label>
-        <select v-model="form.facility_rating" required class="w-full border rounded px-3 py-2">
+        <label class="block text-sm font-medium mb-1">Тип кузова</label>
+        <select v-model="form.body_type" required class="w-full border rounded px-3 py-2">
           <option disabled value="">выбери</option>
-          <option value="low">low</option>
-          <option value="medium">medium</option>
-          <option value="high">high</option>
+          <option v-for="item in bodyTypeOptions" :key="item" :value="item">{{ item }}</option>
         </select>
       </div>
 
-      <button type="submit" :disabled="loading"
-        class="w-full bg-blue-600 text-white py-2 rounded disabled:opacity-50">
-        {{ loading ? 'Считаю...' : 'Предсказать' }}
+      <div>
+        <label class="block text-sm font-medium mb-1">Привод</label>
+        <select v-model="form.drive" required class="w-full border rounded px-3 py-2">
+          <option disabled value="">выбери</option>
+          <option v-for="item in driveOptions" :key="item" :value="item">{{ item }}</option>
+        </select>
+      </div>
+
+      <button 
+        type="submit" 
+        :disabled="loading"
+        class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2.5 rounded font-medium disabled:opacity-50 transition"
+      >
+        {{ loading ? 'Считаю...' : 'Предсказать цену' }}
       </button>
     </form>
 
-    <div v-if="result !== null" class="mt-4 text-lg font-semibold">
-      Предсказанная оценка: {{ result.toFixed(2) }}
+    <div v-if="result !== null" class="mt-6 p-4 bg-green-50 border border-green-200 rounded-lg space-y-1">
+      <div class="text-xs font-semibold text-green-700 uppercase tracking-wide">Результат оценки:</div>
+      <div class="text-2xl font-bold text-green-800">
+        ${{ result.toLocaleString('en-US') }}
+      </div>
     </div>
-    <div v-if="error" class="mt-4 text-red-600">Ошибка: {{ error }}</div>
+
+    <div v-if="error" class="mt-4 p-3 bg-red-50 border border-red-200 text-red-600 rounded">
+      Ошибка: {{ error }}
+    </div>
   </div>
 </template>
